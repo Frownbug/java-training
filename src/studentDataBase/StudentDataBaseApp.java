@@ -6,25 +6,6 @@ public class StudentDataBaseApp {
 
 	public static void main(String[] args) {
 		
-		Student student1 = new Student("1234567890", "James");
-		Student student2 = new Student("1020304050", "Sarah");
-		
-		student1.setCity("Columbus");
-		student1.setPhoneNumber("614-555-1234");
-		student1.setState("Ohio");
-		System.out.println(student1.toString());
-		student1.enroll("math");
-		student1.enroll("language");
-		student1.enroll("chior");
-		student1.showCourses();
-		student1.checkBalance();
-		student1.pay(235.06);
-		
-		student2.setCity("Seattle");
-		student2.setState("Washington");
-		student2.setPhoneNumber("516-888-4444");
-		student2.enroll("Histroy");
-		
 	}
 }
 	
