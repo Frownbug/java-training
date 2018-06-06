@@ -30,11 +30,11 @@ public class PasswordValidationApp {
 				throw new DigitException(password);
 			} else if (!(p.find()) && d.find() && l.find()) {
 				throw new SpecialCharException(password);
-			} else if (!(l.find()) && !(d.find())) {
+			} else if (!(l.find()) && !(d.find()) && p.find()) {
 				throw new DigitLetterException(password);
-			} else if (!(l.find()) && !(p.find())) {
+			} else if (!(l.find()) && !(p.find()) && d.find()) {
 				throw new SpecialCharLetterException(password);
-			} else if (!(d.find()) && !(p.find())) {
+			} else if (!(d.find()) && !(p.find()) && l.find()) {
 				throw new SpecialCharDigitException(password);
 			} else {
 				System.out.print("Re-type Password: ");
