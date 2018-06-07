@@ -13,14 +13,14 @@ public class PasswordValidationApp {
 		String password = reader.nextLine();
 		reader.close();
 		
-		String[] patterns = {"(?=([\\s]+))", "(?=([^a-zA-Z]))", "(?=([^\\d]))", "(?=([^\\p{Punct}]))"};  
+		String[] patterns = {"\\S", "[a-zA-Z]", "\\d", "\\p{Punct}"};  
 		
 		for( String regx : patterns) {
 			Pattern p = Pattern.compile(regx);
 			Matcher match = p.matcher(password);
 		
 			try {
-				if (match.find()) {
+				if (!(match.find())) {
 					throw new RequirementsException(password, regx);
 				}
 			} catch (RequirementsException e) {
@@ -38,13 +38,13 @@ class RequirementsException extends Exception {
 	RequirementsException(String pw, String rx) {
 		this.pw = pw;
 		switch (rx) {
-		case "(?=([\\s]+))": errorMsg = "Password can not contain White Spaces";
+		case "(?=([\\S]+))": errorMsg = "Password can not contain White Spaces";
 		break;
-		case "(?=([^a-zA-Z]))": errorMsg = "Password must contain a Letter";
+		case "[a-zA-Z]": errorMsg = "Password must contain a Letter";
 		break;
-		case "(?=([^\\d]))": errorMsg = "Password must contain a Digit";
+		case "\\d": errorMsg = "Password must contain a Digit";
 		break;
-		case "(?=([^\\p{Punct}]))": errorMsg = "Password must contain a Special Character (e.g. !@#$%^&*)";
+		case "\\p{Punct}": errorMsg = "Password must contain a Special Character (e.g. !@#$%^&*)";
 		break;
 		}
 		
