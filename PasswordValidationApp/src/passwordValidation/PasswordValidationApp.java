@@ -38,7 +38,7 @@ class RequirementsException extends Exception {
 	RequirementsException(String pw, String rx) {
 		this.pw = pw;
 		switch (rx) {
-		case "(?=([\\S]+))": errorMsg = "Password can not contain White Spaces";
+		case "\\b[^\\s]$": errorMsg = "Password can not contain White Spaces";
 		break;
 		case "[a-zA-Z]": errorMsg = "Password must contain a Letter";
 		break;
