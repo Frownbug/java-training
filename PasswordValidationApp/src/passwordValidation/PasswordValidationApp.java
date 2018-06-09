@@ -13,7 +13,19 @@ public class PasswordValidationApp {
 		String password = reader.nextLine();
 		reader.close();
 		
-		String[] patterns = {"\\S", "[a-zA-Z]", "\\d", "\\p{Punct}"};  
+		String[] patterns = {"[a-zA-Z]", "\\d", "\\p{Punct}"};  
+		
+		Pattern whSp = Pattern.compile("\\s");
+		Matcher ws = whSp.matcher(password);
+		
+		try {
+			if (ws.find()) {
+				throw new WhiteSpaceException(password);
+			}
+		} catch (WhiteSpaceException e) {
+			System.out.println("ERROR: Password must not contain White Spaces");
+			System.out.println(e.toString());
+		}
 		
 		for( String regx : patterns) {
 			Pattern p = Pattern.compile(regx);
@@ -24,9 +36,9 @@ public class PasswordValidationApp {
 					throw new RequirementsException(password, regx);
 				}
 			} catch (RequirementsException e) {
-			System.out.println(RequirementsException.errorMsg);
-			System.out.println(e.toString());
-			}
+				System.out.println(RequirementsException.errorMsg);
+				System.out.println(e.toString());
+			} 
 		}
 	}
 }
@@ -38,8 +50,6 @@ class RequirementsException extends Exception {
 	RequirementsException(String pw, String rx) {
 		this.pw = pw;
 		switch (rx) {
-		case "\\b[^\\s]$": errorMsg = "Password can not contain White Spaces";
-		break;
 		case "[a-zA-Z]": errorMsg = "Password must contain a Letter";
 		break;
 		case "\\d": errorMsg = "Password must contain a Digit";
@@ -52,6 +62,18 @@ class RequirementsException extends Exception {
 	
 	public String toString() {
 		return ("RequirementsException: " + pw);
+	}
+}
+
+class WhiteSpaceException extends Exception {
+	private String pw;
+	
+	WhiteSpaceException(String pw) {
+		this.pw = pw;
+	}
+	
+	public String toString() {
+		return ("WhiteSpaceException: " + pw);
 	}
 }
 
