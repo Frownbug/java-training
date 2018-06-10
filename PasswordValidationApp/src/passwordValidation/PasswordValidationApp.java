@@ -9,6 +9,7 @@ public class PasswordValidationApp {
 	public static void main(String[] args) {
 		
 		boolean validPassword = true;
+		boolean noWhiteSpace = true;
 		boolean passwordMatch = true;
 		String password;
 		String retypedPassword;
@@ -24,10 +25,10 @@ public class PasswordValidationApp {
 			
 			try {
 				if (ws.find()) {
-					validPassword = false;
+					noWhiteSpace = false;
 					throw new WhiteSpaceException(password);
 				} else {
-					validPassword = true;
+					noWhiteSpace = true;
 				}
 			} catch (WhiteSpaceException e) {
 				System.out.println("ERROR: Password must not contain White Spaces");
@@ -52,7 +53,7 @@ public class PasswordValidationApp {
 					System.out.println(e.toString());
 				} 
 			}
-		}  while (validPassword == false);
+		}  while (validPassword == false || noWhiteSpace == false);
 		
 		do {
 			if (validPassword) {
