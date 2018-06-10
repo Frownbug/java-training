@@ -8,38 +8,73 @@ public class PasswordValidationApp {
 
 	public static void main(String[] args) {
 		
+		boolean validPassword = true;
+		boolean passwordMatch = true;
+		String password;
+		String retypedPassword;
+		
 		Scanner reader = new Scanner(System.in);
-		System.out.print("Enter New Password: ");
-		String password = reader.nextLine();
-		reader.close();
 		
-		String[] patterns = {"[a-zA-Z]", "\\d", "\\p{Punct}"};  
-		
-		Pattern whSp = Pattern.compile("\\s");
-		Matcher ws = whSp.matcher(password);
-		
-		try {
-			if (ws.find()) {
-				throw new WhiteSpaceException(password);
-			}
-		} catch (WhiteSpaceException e) {
-			System.out.println("ERROR: Password must not contain White Spaces");
-			System.out.println(e.toString());
-		}
-		
-		for( String regx : patterns) {
-			Pattern p = Pattern.compile(regx);
-			Matcher match = p.matcher(password);
-		
+		do {
+			System.out.print("Enter New Password: ");
+			password = reader.nextLine();
+			
+			Pattern whSp = Pattern.compile("\\s");
+			Matcher ws = whSp.matcher(password);
+			
 			try {
-				if (!(match.find())) {
-					throw new RequirementsException(password, regx);
+				if (ws.find()) {
+					validPassword = false;
+					throw new WhiteSpaceException(password);
+				} else {
+					validPassword = true;
 				}
-			} catch (RequirementsException e) {
-				System.out.println(RequirementsException.errorMsg);
+			} catch (WhiteSpaceException e) {
+				System.out.println("ERROR: Password must not contain White Spaces");
 				System.out.println(e.toString());
-			} 
-		}
+			}
+			
+			String[] patterns = {"[a-zA-Z]", "\\d", "\\p{Punct}"};
+			
+			for( String regx : patterns) {
+				Pattern p = Pattern.compile(regx);
+				Matcher match = p.matcher(password);
+			
+				try {
+					if (!(match.find())) {
+						validPassword = false;
+						throw new RequirementsException(password, regx);
+					} else {
+						validPassword = true;
+					}
+				} catch (RequirementsException e) {
+					System.out.println(RequirementsException.errorMsg);
+					System.out.println(e.toString());
+				} 
+			}
+		}  while (validPassword == false);
+		
+		do {
+			if (validPassword) {
+				System.out.print("Re-type Password: ");
+				retypedPassword = reader.nextLine();
+				
+				try {
+					if (!(retypedPassword.equals(password))) {
+						passwordMatch = false;
+						throw new PasswordDoesntMatchException(retypedPassword);
+					} else {
+						passwordMatch = true;
+						System.out.println("Password Accepted");
+					}
+				} catch (PasswordDoesntMatchException e) {
+					System.out.println("ERROR: Password does not match");
+					System.out.println(e.toString());
+				}
+			}
+		} while (passwordMatch == false);
+		
+		reader.close();
 	}
 }
 
@@ -77,7 +112,7 @@ class WhiteSpaceException extends Exception {
 	}
 }
 
-/*class PasswordDoesntMatchException extends Exception {
+class PasswordDoesntMatchException extends Exception {
 	private String pw;
 	
 	PasswordDoesntMatchException(String pw) {
@@ -88,4 +123,3 @@ class WhiteSpaceException extends Exception {
 		return ("PasswordDoesntMatchException: " + pw);
 	}
 }
-*/
