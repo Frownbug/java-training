@@ -8,9 +8,11 @@ public class PasswordValidationApp {
 
 	public static void main(String[] args) {
 		
-		boolean validPassword = true;
-		boolean noWhiteSpace = true;
-		boolean passwordMatch = true;
+		boolean digitPresent = false;
+		boolean letterPresent = false;
+		boolean specCharPresent = false;
+		boolean noWhiteSpace = false;
+		boolean passwordMatch = false;
 		String password;
 		String retypedPassword;
 		
@@ -22,41 +24,51 @@ public class PasswordValidationApp {
 			
 			Pattern whSp = Pattern.compile("\\s");
 			Matcher ws = whSp.matcher(password);
+			Pattern d = Pattern.compile("\\d");
+			Matcher digit = d.matcher(password);
+			Pattern l = Pattern.compile("[a-zA-Z]");
+			Matcher letter = l.matcher(password);
+			Pattern sc = Pattern.compile("\\p{Punct}");
+			Matcher specChar = sc.matcher(password);
 			
 			try {
 				if (ws.find()) {
-					noWhiteSpace = false;
 					throw new WhiteSpaceException(password);
 				} else {
 					noWhiteSpace = true;
 				}
+				if (!(letter.find())) {
+					throw new LetterException(password);
+				} else {
+					letterPresent = true;
+				}
+				if (!(digit.find())) {
+					throw new DigitException(password);
+				} else {
+					digitPresent = true;
+				}
+				if (!(specChar.find())) {
+					throw new SpecCharException(password);
+				} else {
+					specCharPresent = true;
+				}
 			} catch (WhiteSpaceException e) {
 				System.out.println("ERROR: Password must not contain White Spaces");
+				System.out.println(e.toString()); 
+			} catch (LetterException e) {
+				System.out.println("ERROR: Password must contain at least one Letter");
+				System.out.println(e.toString());
+			} catch (DigitException e) {
+				System.out.println("ERROR: Password must contain at least one Digit");
+				System.out.println(e.toString());
+			} catch (SpecCharException e) {
+				System.out.println("ERROR: Password must contain at least one Special Character (e.g. !@#$%^&*)");
 				System.out.println(e.toString());
 			}
-			
-			String[] patterns = {"[a-zA-Z]", "\\d", "\\p{Punct}"};
-			
-			for( String regx : patterns) {
-				Pattern p = Pattern.compile(regx);
-				Matcher match = p.matcher(password);
-			
-				try {
-					if (!(match.find())) {
-						validPassword = false;
-						throw new RequirementsException(password, regx);
-					} else {
-						validPassword = true;
-					}
-				} catch (RequirementsException e) {
-					System.out.println(RequirementsException.errorMsg);
-					System.out.println(e.toString());
-				} 
-			}
-		}  while (validPassword == false || noWhiteSpace == false);
+		}  while (!(digitPresent) || !(noWhiteSpace) || !(letterPresent) || !(specCharPresent));
 		
 		do {
-			if (validPassword) {
+			if ((digitPresent) && (noWhiteSpace) && (letterPresent) && (specCharPresent)) {
 				System.out.print("Re-type Password: ");
 				retypedPassword = reader.nextLine();
 				
@@ -79,28 +91,6 @@ public class PasswordValidationApp {
 	}
 }
 
-class RequirementsException extends Exception {
-	private String pw;
-	static String errorMsg;
-	
-	RequirementsException(String pw, String rx) {
-		this.pw = pw;
-		switch (rx) {
-		case "[a-zA-Z]": errorMsg = "Password must contain a Letter";
-		break;
-		case "\\d": errorMsg = "Password must contain a Digit";
-		break;
-		case "\\p{Punct}": errorMsg = "Password must contain a Special Character (e.g. !@#$%^&*)";
-		break;
-		}
-		
-	}
-	
-	public String toString() {
-		return ("RequirementsException: " + pw);
-	}
-}
-
 class WhiteSpaceException extends Exception {
 	private String pw;
 	
@@ -110,6 +100,42 @@ class WhiteSpaceException extends Exception {
 	
 	public String toString() {
 		return ("WhiteSpaceException: " + pw);
+	}
+}
+
+class DigitException extends Exception {
+	private String pw;
+	
+	DigitException(String pw) {
+		this.pw = pw;
+	}
+	
+	public String toString() {
+		return ("DigitException: " + pw);
+	}
+}
+
+class LetterException extends Exception {
+	private String pw;
+	
+	LetterException(String pw) {
+		this.pw = pw;
+	}
+	
+	public String toString() {
+		return ("LetterException: " + pw);
+	}
+}
+
+class SpecCharException extends Exception {
+	private String pw;
+	
+	SpecCharException(String pw) {
+		this.pw = pw;
+	}
+	
+	public String toString() {
+		return ("SpecCharException: " + pw);
 	}
 }
 
